@@ -16,12 +16,11 @@ export default class AppRouter extends Component {
         return(
             <Provider store={ store }>
                 <Router history={ hashHistory }>
-                    <Redirect from="/" to="/login"/>
                     <Route path="/" component={App}>
                         <Route path="login" component={LoginView} />
                         <Route path="chat" component={Chat} onEnter={requireAuth} />
                     </Route>
-                    <Redirect from="*" to="/login"/>
+                    <Redirect from="*" to="/"/>
                 </Router>
             </Provider>
         );

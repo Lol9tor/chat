@@ -1,6 +1,8 @@
 var crypto = require('crypto');
 
 module.exports = function (connection, DataTypes) {
+	var hiddenFields = ['salt', 'hashedPassword'];
+
 	var User = connection.define('User', {
 		email: {
 			type: DataTypes.STRING,
@@ -11,7 +13,10 @@ module.exports = function (connection, DataTypes) {
 				len: [1,255]
 			}
 		},
-		username: DataTypes.STRING,
+		username: {
+			type: DataTypes.STRING,
+			unique: true
+		},
 		hashedPassword: DataTypes.STRING,
 		salt: DataTypes.STRING,
 		password: {
@@ -34,6 +39,12 @@ module.exports = function (connection, DataTypes) {
 			checkPassword: function (val) {
 				console.log(val, this.hashedPassword);
 				return this.encryptPassword(val) === this.hashedPassword;
+			},
+			toJSON: function () {
+				hiddenFields.forEach( (key) => {
+				   delete this.dataValues[key];
+				});
+			    return this.dataValues;
 			}
 		}
 	});

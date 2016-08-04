@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding: 30px;
   font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -23,4 +23,35 @@ a:hover {
 
 .formInputs {
   margin-bottom: 25px;
+}
+
+.socialIcons {
+  float: right;
+  margin-top: 50px;
+}
+
+.socialIcons>img {
+  margin: 3px;
+}
+
+.socialIcons>img:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.circularProgress{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index:999;
+}
+.circularProgress>div{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index:1000;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
 }

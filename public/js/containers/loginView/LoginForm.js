@@ -19,6 +19,7 @@ class LoginForm extends Component {
 			this.props.router.replace('/chat');
 		}).catch((err)=>{
 			console.log(err);
+			invalidateForm(err.error.fields)
 		})
     };
 

@@ -2,6 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actions from '../../actions/actions';
+import {getAllUsers} from '../../utils/api'
+
+import MessageBox from '../../components/messageBox';
+import UserList from '../../components/userList';
 
 class Chat extends Component {
     static propTypes = {
@@ -17,7 +21,7 @@ class Chat extends Component {
     }
 
     componentDidMount() {
-
+		getAllUsers();
     }
 
     logOut = () => {
@@ -25,12 +29,15 @@ class Chat extends Component {
     };
 
     render() {
-        const path = this.props.location.pathname;
-
         return (
             <div>
-                <header>Welcome to chat</header>
-                Chat will be here
+                <header>
+	                <h2>Welcome to chat</h2>
+                </header>
+                <div>
+	                <UserList/>
+	                <MessageBox/>
+                </div>
             </div>
         );
     }

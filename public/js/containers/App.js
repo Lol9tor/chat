@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actions from '../actions/actions';
+import { withRouter } from 'react-router';
+import {authenticate} from '../actions/actions';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -19,7 +20,7 @@ class App extends Component {
     constructor(props){
         super();
         this.state = {
-            isAuthenticate: false
+            isAuthenticated: false
         }
 
     }
@@ -31,12 +32,31 @@ class App extends Component {
     }
 
     componentDidMount() {
-
+        this.props.authenticate().then(()=>{
+            this.props.router.replace('/chat');
+        }).catch((err) => {
+            console.log(err);
+            this.props.router.replace('/login');
+        }).then(()=>{
+            this.setAuthentication(true);
+        })
     }
+
+    setAuthentication = (val) => {
+        this.setState({
+            isAuthenticated: val
+        })
+    };
 
     render() {
         let content = this.props.children;
-
+        if (!this.state.isAuthenticated) {
+            content = <div className='circularProgress'>
+                <div>
+                    <CircularProgress mode="indeterminate" size={2}/>
+                </div>
+            </div>;
+        }
         return <div>{content}</div>
     }
 }
@@ -48,5 +68,5 @@ export default connect(
             user: state.user
         };
     },
-    (dispatch) => bindActionCreators(actions, dispatch)
-)(App);
+    (dispatch) => bindActionCreators({authenticate}, dispatch)
+)(withRouter(App));

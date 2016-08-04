@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
+import SocialIcons from '../../components/socialIcons';
 
 class LoginView extends Component {
     static propTypes = {
@@ -41,11 +42,16 @@ class LoginView extends Component {
 	    }
     };
 
+	socialAuthorize(social) {
+
+	}
+
     render() {
     	const CurrentPage = this.state.page.component;
         return <div className="loginContainer">
 	        <CurrentPage isLoading={this.state.isLoading} className='loginForm'/>
 	        <span>or <a onClick={this.changeForm}>{this.state.page.titleOpposite}</a></span>
+	        <SocialIcons handleClick={this.socialAuthorize}/>
         </div>
     }
 }

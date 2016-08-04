@@ -58,8 +58,8 @@ function transformBodyToMultipart(body) {
 
 export function authenticate() {
     const obj = {
-        method: 'GET',
-        url: `/users/me`
+        method: 'POST',
+        url: `/auth/me`
     };
     return sendRequest(obj);
 }
@@ -75,22 +75,30 @@ export function signIn(user) {
     return sendRequest(obj);
 }
 
-export function logOut() {
-    const obj = {
-        method: 'POST',
-        url: `/logout`
-    };
-    return sendRequest(obj);
-}
-
 export function signUp(user) {
     if (typeof user !== 'object') {
         return Promise.reject('User is not object');
     }
     const obj = {
         method: 'POST',
-        url: `/users`,
+        url: `/signup`,
         body: JSON.stringify(user)
+    };
+    return sendRequest(obj);
+}
+
+export function getAllUsers() {
+	const obj = {
+		method: 'GET',
+		url: `/users`
+	};
+	return sendRequest(obj);
+}
+
+export function logOut() {
+    const obj = {
+        method: 'POST',
+        url: `/logout`
     };
     return sendRequest(obj);
 }

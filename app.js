@@ -29,7 +29,7 @@ connection
 connection.sync({force: true})
 	.then(()=>{
 	userModel.bulkCreate([{
-		email: 'osemenovich@qualium-system.com.ua',
+		email: 'osemenovich@qualium-systems.com.ua',
 		username: 'Oleh',
 		password: '123456'
 	}, {
@@ -52,10 +52,15 @@ passport.use(new LocalStrategy({
 	passwordField: 'password'
 },
 	function(email, password, done) {
-		console.log(email, password, done);
-		userModel.findOne({ email: email }).then(function (user) {
+
+		console.log(email, password);
+		userModel.findOne({ where: {email: email} }).then(function (user) {
+			console.log(user);
 			if (!user || !user.checkPassword(password)) {
-				return done(null, false, { message: 'Incorrect email or password.' });
+				return done(null, false, { fields:{
+					email: 'Incorrect email or password.',
+					password: 'Incorrect email or password.'
+				}});
 			}
 
 			return done(null, user);
@@ -76,13 +81,22 @@ passport.deserializeUser(function(id, done) {
 });
 
 
-app.post('/login', passport.authenticate('local'), routes.users(userModel).login);
+app.post('/auth/me', routes.users(userModel).authenticate);
+
+app.post('/login', function (req, res, next) {
+
+	passport.authenticate('local', function(err, user, info) {
+		if (err) { return next(err); }
+		if (!user) { return res.status(401).json(info); }
+		req.logIn(user, function(err) {
+			if (err) { return next(err); }
+			return routes.users(userModel).login(req, res);
+		});
+	})(req, res, next)
+});
+app.post('/signup', routes.users(userModel).signup);
 
 app.get('/users', routes.users(userModel).getAll);
-app.get('/users/:id', routes.users(userModel).getById);
-app.put('/users/:id', routes.users(userModel).update);
-app.post('/users', routes.users(userModel).create);
-app.delete('/users/:id', routes.users(userModel).delete);
 
 //setup webpack config and hot reload
 var webpack = require('webpack');
@@ -118,7 +132,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
 	app.use(function(err, req, res, next) {
 		res.status(err.status || 500);
-		res.render('error', {
+		res.json({
 			message: err.message,
 			error: err
 		});
@@ -129,7 +143,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
 	res.status(err.status || 500);
-	res.render('error', {
+	res.json({
 		message: err.message,
 		error: {}
 	});

@@ -13,6 +13,34 @@ class SignUpForm extends Component {
 		isLoading: PropTypes.bool.isRequired
 	};
 
+	handleValidSubmit = (user, resetForm, invalidateForm) => {
+		this.props.signUp(user).then(()=>{
+			this.props.router.replace('/chat');
+		}).catch((err)=>{
+			console.error(err);
+			invalidateForm(err.error.fields)
+		})
+	};
+
+	handleInvalidSubmit = (user, resetForm, invalidateForm) => {
+		const errorsObj = {};
+
+		for (let k in user) {
+			if (user.hasOwnProperty(k)){
+			    if (!user[k]){
+			        errorsObj[k] = `${k} is required`
+			    }
+			}
+		}
+		invalidateForm(errorsObj);
+	};
+
+	mapInputs = inputs => ({
+		email: inputs.email,
+		username: inputs.username,
+		password: inputs.password
+	});
+
 	render() {
 		return <div className={this.props.className}>
 				<h2>Sign Up</h2>
@@ -20,6 +48,7 @@ class SignUpForm extends Component {
 					ref="form"
 					onValidSubmit={this.handleValidSubmit}
 					onInvalidSubmit={this.handleInvalidSubmit}
+					mapping={this.mapInputs}
 				>
 					<div className="formInputs">
 						<FormsyText
@@ -83,4 +112,11 @@ class SignUpForm extends Component {
 	}
 }
 
-export default withRouter(SignUpForm)
+export default connect(
+	(state) => {
+		return {
+
+		};
+	},
+	(dispatch) => bindActionCreators({signUp}, dispatch)
+)(withRouter(SignUpForm));
