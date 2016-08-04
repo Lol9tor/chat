@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import io from 'socket.io-client';
 import * as actions from '../../actions/actions';
-import {getAllUsers} from '../../utils/api'
 
 import MessageBox from '../../components/messageBox';
 import UserList from '../../components/userList';
@@ -18,10 +18,18 @@ class Chat extends Component {
         this.state = {
 
         }
+        this.socket = null;
     }
 
     componentDidMount() {
-		getAllUsers();
+        this.socket = io('http://localhost:3000');
+        this.socket.on('chat message', (msg) => {
+            console.log(msg);
+        })
+    }
+
+    sendMessage = (message) => {
+        this.socket.emit('chat message', message)
     }
 
     logOut = () => {
@@ -36,7 +44,7 @@ class Chat extends Component {
                 </header>
                 <div>
 	                <UserList/>
-	                <MessageBox/>
+	                <MessageBox sendMessage={this.sendMessage}/>
                 </div>
             </div>
         );

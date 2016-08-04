@@ -25,7 +25,9 @@ var Sequelize = require('sequelize'),
 var userModel = require('./models/user')(connection, Sequelize);
 
 connection
-	.authenticate().then(()=>{console.log('Database is working...');}).catch((err)=>{console.log(err);});
+	.authenticate().then(()=>{
+		console.log('Database is working...');
+	}).catch((err)=>{console.log(err);});
 connection.sync({force: true})
 	.then(()=>{
 	userModel.bulkCreate([{
