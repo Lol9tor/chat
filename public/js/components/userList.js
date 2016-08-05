@@ -6,7 +6,7 @@ class UserList extends Component {
     };
 
     render() {
-        return <div>
+        return <div className="userList">
 	        <h3>Users online:</h3>
         </div>
     }

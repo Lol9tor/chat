@@ -1,15 +1,21 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
 body {
   padding: 30px;
   font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
-  color: #00B7FF;
+  color: #00BCD4;
 }
 
 a:hover {
   cursor: pointer;
-  color: #058CFF;
+  color: #009DD4;
 }
 
 .loginContainer {
@@ -54,4 +60,14 @@ a:hover {
   z-index:1000;
   transform: translate(-50%, -50%);
   -webkit-transform: translate(-50%, -50%);
+}
+
+.messageBox {
+	float: left;
+	width: 80%;
+}
+
+.userList {
+	float: left;
+	width: 20%;
 }

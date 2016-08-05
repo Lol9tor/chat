@@ -7,6 +7,10 @@ import { signIn } from '../../actions/actions';
 import { FormsyText } from 'formsy-material-ui';
 import RaisedBtn from 'material-ui/RaisedButton';
 
+const style = {
+	fontSize: '16px',
+	fontWeight: 'bold'
+};
 
 class LoginForm extends Component {
     static propTypes = {
@@ -65,6 +69,7 @@ class LoginForm extends Component {
                         fullWidth={true}
                         primary={true}
                         disabled={this.props.isLoading}
+                        labelStyle={style}
                     />
                 </div>
             </Formsy.Form>

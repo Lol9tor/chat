@@ -16,8 +16,8 @@ class Chat extends Component {
         super(props);
 
         this.state = {
-
-        }
+			messages: []
+        };
         this.socket = null;
     }
 
@@ -25,12 +25,20 @@ class Chat extends Component {
         this.socket = io('http://localhost:3000');
         this.socket.on('chat message', (msg) => {
             console.log(msg);
+	        this.setState({
+	        	messages: this.state.messages.concat(msg)
+	        })
         })
     }
 
     sendMessage = (message) => {
-        this.socket.emit('chat message', message)
-    }
+        this.socket.emit('chat message', message, (data) => {
+            console.log(data);
+	        this.setState({
+		        messages: this.state.messages.concat(message)
+	        })
+        })
+    };
 
     logOut = () => {
 
@@ -43,8 +51,11 @@ class Chat extends Component {
 	                <h2>Welcome to chat</h2>
                 </header>
                 <div>
-	                <UserList/>
-	                <MessageBox sendMessage={this.sendMessage}/>
+	                <UserList />
+	                <MessageBox
+		                sendMessage={this.sendMessage}
+	                    messages={this.state.messages}
+	                />
                 </div>
             </div>
         );
