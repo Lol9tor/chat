@@ -1,13 +1,8 @@
-import React, {Component, PropTypes} from 'react'
+import React from 'react'
 
-class StatusMessage extends Component {
-    static propTypes = {
+export default function (props) {
 
-    };
-
-    render() {
-        return <div></div>
-    }
+    return <div className="message statusMessage">
+        {props.message}
+    </div>
 }
-
-export default StatusMessage

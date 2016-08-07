@@ -38,9 +38,15 @@ export function signUp(user) {
 }
 
 export function logOut() {
-    requests.logOut();
+
     return {
-        type: types.LOG_OUT
+        type: types.PROMISE,
+        types: [
+            types.LOG_OUT,
+            types.LOG_OUT_SUCCESS,
+            types.LOG_OUT_ERROR
+        ],
+        promise: requests.logOut()
     }
 }
 

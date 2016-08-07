@@ -3,6 +3,7 @@ import React, {Component, PropTypes} from 'react'
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import ChatMessage from './chatMessage';
+import StatusMessage from './statusMessage';
 
 const styles = {
 	btnLabel: {
@@ -13,7 +14,7 @@ const styles = {
 		width: '14%'
 	},
 	input: {
-		width: '85%',
+		width: '84%',
 		marginRight: '1%'
 	}
 };
@@ -24,30 +25,54 @@ class MessageBox extends Component {
 	    messages: PropTypes.array.isRequired
     };
 
+    constructor(){
+        super();
+        this.state = {
+            value: ''
+        }
+    }
+
     sendMessage = () => {
-        const text = this.input.value;
-		console.log(text);
+        const text = this.state.value;
+
 	    if (!text){
 	        return false;
 	    }
         this.props.sendMessage(text);
-        this.input.value = '';
+        this.setState({
+            value: ''
+        })
+    };
+
+    handleChange = (e) => {
+        this.setState({
+            value: e.target.value
+        });
+    };
+
+    onEnterPress = (e) => {
+        if (e.which === 13) {
+            this.sendMessage();
+        }
     };
 
     render() {
         return <div className="messageBox">
-	        <div>
-		        {this.props.messages.map((msg, i) => <ChatMessage key={i} message={msg}/>)}
+	        <div className="messageList">
+		        {this.props.messages.map((msg, i) => {
+                    return msg.username ? <ChatMessage
+                        key={i}
+                        msg={msg}
+                        user={this.props.user}
+                    /> : <StatusMessage key={i} message={msg.message}/>
+                })}
 	        </div>
 	        <div>
 		        <TextField
 			        type="text"
-			        ref={(el)=>{this.input = el}}
-			        onKeyPress={(e) => {
-				        if (e.which === 13) {
-					        this.sendMessage();
-				        }
-		            }}
+                    value={this.state.value}
+			        onKeyPress={this.onEnterPress}
+                    onChange={this.handleChange}
 			        hintText="Type message..."
 		            style={styles.input}
 		        />
@@ -55,6 +80,7 @@ class MessageBox extends Component {
 			        label="Send"
 			        primary={true}
 			        style={styles.btn}
+					onClick={this.sendMessage}
 			        labelStyle={styles.btnLabel}
 		        />
 	        </div>

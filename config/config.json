@@ -4,5 +4,15 @@
 		"host": "localhost",
 		"dialect": "mysql",
 		"port": 3306
+	},
+	"session": {
+		"secret": "secretNinja",
+		"name": "sid",
+		"cookie": {
+			"path": "/",
+			"httpOnly": true,
+			"secure": false,
+			"maxAge": null
+		}
 	}
 }

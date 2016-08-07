@@ -37,6 +37,7 @@ module.exports = function (User) {
 		authenticate: function (req, res) {
 			console.log(req.isAuthenticated());
 			console.log('session ', req.session);
+			console.log('cookies ', req.cookies.sid);
 			if (req.isAuthenticated()){
 				this.login(req, res);
 			} else {
@@ -46,6 +47,7 @@ module.exports = function (User) {
 			}
 		},
 		login: function (req, res) {
+			console.log(req.isAuthenticated());
 			console.log('user', req.user.toJSON());
 			console.log('session ', req.session);
 			res.json(req.user);
@@ -69,11 +71,13 @@ module.exports = function (User) {
 				});
 
 		},
-		update: function (req, res) {
-
+		logout: function (req, res) {
+			console.log('logout');
+			req.logout();
+			res.status(200).json({});
 		},
 		delete: function (req, res) {
 
-		},
+		}
 	}
 };

@@ -3,24 +3,39 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('cookie-session');
+var session = require('express-session');
 var config = require('./config/config');
 
+var SequelizeStore = require('connect-session-sequelize')(session.Store);
 var routes = require('./routes/index');
 
 var app = express();
+
+var Sequelize = require('sequelize'),
+		connection = new Sequelize('test', 'root', 'mysql', config.db);
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({keys: ['secretNinja']}));
+app.use(session({
+	"secret": "secretNinja",
+	"store": new SequelizeStore({
+		db: connection
+	}),
+	"cookie": {
+		"path": "/",
+		"httpOnly": true,
+		"secure": false,
+		"maxAge": null
+	},
+	name: "sid",
+	"resave": false,
+	"saveUninitialized": false
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // setup database
-
-var Sequelize = require('sequelize'),
-	connection = new Sequelize('test', 'root', 'mysql', config.db);
 
 var userModel = require('./models/user')(connection, Sequelize);
 
@@ -57,7 +72,6 @@ passport.use(new LocalStrategy({
 
 		console.log(email, password);
 		userModel.findOne({ where: {email: email} }).then(function (user) {
-			console.log(user);
 			if (!user || !user.checkPassword(password)) {
 				return done(null, false, { fields:{
 					email: 'Incorrect email or password.',
@@ -82,7 +96,6 @@ passport.deserializeUser(function(id, done) {
 	});
 });
 
-
 app.post('/auth/me', routes.users(userModel).authenticate);
 
 app.post('/login', function (req, res, next) {
@@ -97,6 +110,8 @@ app.post('/login', function (req, res, next) {
 	})(req, res, next)
 });
 app.post('/signup', routes.users(userModel).signup);
+
+app.post('/logout', routes.users(userModel).logout);
 
 app.get('/users', routes.users(userModel).getAll);
 

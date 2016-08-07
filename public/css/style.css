@@ -67,7 +67,33 @@ a:hover {
 	width: 80%;
 }
 
+.messageList {
+  height: calc(100vh - 120px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-left: 2px solid #b7aeae;
+  border-bottom: 2px solid #b7aeae;
+  padding: 10px;
+}
+
 .userList {
 	float: left;
 	width: 20%;
+}
+
+.message {
+  clear: both;
+}
+
+.statusMessage {
+    text-align: center;
+}
+
+.currentUser {
+  float: right;
+}
+
+.currentUser>div {
+  float: right;
+  clear: both;
 }

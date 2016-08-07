@@ -8,6 +8,7 @@ function sendRequest(obj) {
     let params = {
             method: obj.method,
             //credentials: 'include',
+            credentials: 'same-origin',
             headers: {...headers, ...{
                 "Content-Type": "application/json"
             }}
@@ -95,10 +96,11 @@ export function getAllUsers() {
 	return sendRequest(obj);
 }
 
-export function logOut() {
+export function logOut(user) {
     const obj = {
         method: 'POST',
-        url: `/logout`
+        url: `/logout`,
+        body: JSON.stringify(user)
     };
     return sendRequest(obj);
 }
