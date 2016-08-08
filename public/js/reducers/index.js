@@ -13,7 +13,7 @@ export function user(state = null, action) {
         case types.SIGN_IN_ERROR:
         case types.SIGN_UP_ERROR:
         case types.AUTHENTICATE_ERROR:
-        case types.LOG_OUT_SUCCESS:
+        case types.LOG_OUT:
             return null;
         default:
             return state;

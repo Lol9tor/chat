@@ -18,21 +18,19 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({
-	"secret": "secretNinja",
-	"store": new SequelizeStore({
-		db: connection
-	}),
-	"cookie": {
-		"path": "/",
-		"httpOnly": true,
-		"secure": false,
-		"maxAge": null
-	},
-	name: "sid",
-	"resave": false,
-	"saveUninitialized": false
-}));
+/*app.use(session({
+	"secret": "secretNinja"
+	// "store": new session.MemoryStore(),
+	// "cookie": {
+	// 	"path": "/",
+	// 	"httpOnly": true,
+	// 	"secure": false,
+	// 	"maxAge": null
+	// },
+	// "name": "sid",
+	// "resave": false,
+	// "saveUninitialized": false
+}));*/
 app.use(express.static(path.join(__dirname, 'public')));
 
 // setup database
@@ -59,10 +57,19 @@ connection.sync({force: true})
 	console.error(err);
 });
 
+app.use('/', function (req, res, next) {
+	console.log('____________------------------____________________------------');
+	console.log('user ',req.user);
+	console.log('isAuthenticated ',req.isAuthenticated());
+	console.log('session ', req.session);
+	console.log('cookies ', req.cookies);
+	next();
+});
+
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy;
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 passport.use(new LocalStrategy({
 	usernameField: 'email',
@@ -100,7 +107,7 @@ app.post('/auth/me', routes.users(userModel).authenticate);
 
 app.post('/login', function (req, res, next) {
 
-	passport.authenticate('local', function(err, user, info) {
+	passport.authenticate('local',{ session: false }, function(err, user, info) {
 		if (err) { return next(err); }
 		if (!user) { return res.status(401).json(info); }
 		req.logIn(user, function(err) {

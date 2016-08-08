@@ -1,7 +1,6 @@
 module.exports = function (User) {
 	return {
 		getAll: function (req, res) {
-			console.log('session ', req.session);
 			let where = {};
 			if (req.query.where){
 				try {
@@ -20,7 +19,6 @@ module.exports = function (User) {
 		},
 		getById: function (req, res) {
 			const id = req.params.id;
-			console.log(id);
 			User.findById(id).then((user)=>{
 				if (user){
 					res.json(user);
@@ -35,9 +33,6 @@ module.exports = function (User) {
 			});
 		},
 		authenticate: function (req, res) {
-			console.log(req.isAuthenticated());
-			console.log('session ', req.session);
-			console.log('cookies ', req.cookies.sid);
 			if (req.isAuthenticated()){
 				this.login(req, res);
 			} else {
@@ -47,9 +42,6 @@ module.exports = function (User) {
 			}
 		},
 		login: function (req, res) {
-			console.log(req.isAuthenticated());
-			console.log('user', req.user.toJSON());
-			console.log('session ', req.session);
 			res.json(req.user);
 		},
 		signup: function (req, res) {

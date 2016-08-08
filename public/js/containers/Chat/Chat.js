@@ -17,7 +17,7 @@ const iconStyle = {
 
 class Chat extends Component {
     static propTypes = {
-
+		user: PropTypes.object.isRequired
     };
 
     constructor(props) {
@@ -27,6 +27,10 @@ class Chat extends Component {
 			messages: []
         };
         this.socket = null;
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+    	return this.state !== nextState;
     }
 
     componentDidMount() {
@@ -50,7 +54,10 @@ class Chat extends Component {
     }
 
     componentWillUnmount() {
-        this.socket.emit('leave', this.props.user);
+    	this.socket.off('chat message');
+    	this.socket.off('user join');
+    	this.socket.off('user leave');
+    	this.socket = null;
     }
 
     sendMessage = (message) => {
@@ -59,7 +66,6 @@ class Chat extends Component {
             message: message
         };
         this.socket.emit('chat message', obj, (timestamp) => {
-            console.log(timestamp);
             obj.timestamp = timestamp;
 	        this.setState({
 		        messages: this.state.messages.concat(obj)
@@ -68,7 +74,7 @@ class Chat extends Component {
     };
 
     logOut = () => {
-        this.socket.emit('leave', this.props.user);
+        this.socket.emit('user leave', this.props.user);
         this.props.logOut(this.props.user).then(()=>{
             this.props.router.replace('/login');
         }).catch((err)=>{
