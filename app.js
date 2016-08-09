@@ -12,25 +12,27 @@ var routes = require('./routes/index');
 var app = express();
 
 var Sequelize = require('sequelize'),
-		connection = new Sequelize('test', 'root', 'mysql', config.db);
+		connection = new Sequelize('chat', 'root', 'mysql', config.db);
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-/*app.use(session({
-	"secret": "secretNinja"
-	// "store": new session.MemoryStore(),
-	// "cookie": {
-	// 	"path": "/",
-	// 	"httpOnly": true,
-	// 	"secure": false,
-	// 	"maxAge": null
-	// },
-	// "name": "sid",
-	// "resave": false,
-	// "saveUninitialized": false
-}));*/
+app.use(session({
+	"secret": "secretNinja",
+	"store": new SequelizeStore({
+		db: connection
+	}),
+	"cookie": {
+		"path": "/",
+		"httpOnly": true,
+		"secure": false,
+		"maxAge": null
+	},
+	"name": "sid",
+	"resave": false,
+	"saveUninitialized": false
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // setup database
@@ -56,7 +58,7 @@ connection.sync({force: true})
 	.catch((err)=>{
 	console.error(err);
 });
-
+/*
 app.use('/', function (req, res, next) {
 	console.log('____________------------------____________________------------');
 	console.log('user ',req.user);
@@ -64,12 +66,12 @@ app.use('/', function (req, res, next) {
 	console.log('session ', req.session);
 	console.log('cookies ', req.cookies);
 	next();
-});
+});*/
 
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy;
 app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.session());
 
 passport.use(new LocalStrategy({
 	usernameField: 'email',
@@ -98,8 +100,14 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-	userModel.findById(id, function(err, user) {
-		done(err, user);
+	userModel.findById(id).then(function(user) {
+		console.log('deserializing user:',user);
+		done(null, user);
+	}).catch(function(err) {
+		if (err) {
+			console.error(err);
+			done(err, false);
+		}
 	});
 });
 

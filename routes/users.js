@@ -33,8 +33,10 @@ module.exports = function (User) {
 			});
 		},
 		authenticate: function (req, res) {
+			console.log('user authenticate', req.user);
+			console.log('isAuthenticated ',req.isAuthenticated());
 			if (req.isAuthenticated()){
-				this.login(req, res);
+				res.json(req.user);
 			} else {
 				res.status(401).json({
 					message: 'Session is expired or does not exist'

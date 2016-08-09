@@ -17,7 +17,7 @@ const iconStyle = {
 
 class Chat extends Component {
     static propTypes = {
-		user: PropTypes.object.isRequired
+		user: PropTypes.object
     };
 
     constructor(props) {
