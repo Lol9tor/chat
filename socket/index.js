@@ -1,10 +1,18 @@
-module.exports = function(server){
-    var socket = require('socket.io');
-    var io = socket(server);
+
+
+module.exports = function(io){
+
+    var passportSocketIo = require('passport.socketio');
+
+    // io.use(passportSocketIo.authorize({
+    //     key: 'connect.sid',
+    //     secret: 'secretNinja',
+    //     store: sessionStore,
+    //     passport: passport
+    // }));
 
     io.on('connection', function(socket){
-        console.log('a user connected');
-        console.log(socket.id);
+        console.log('a user connected. id: ', socket.id);
 
         socket.on('user join', function (user, cb) {
             socket.broadcast.emit('user join', {

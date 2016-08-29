@@ -13,6 +13,8 @@
 			"httpOnly": true,
 			"secure": false,
 			"maxAge": null
-		}
+		},
+		"resave": false,
+		"saveUninitialized": false
 	}
 }

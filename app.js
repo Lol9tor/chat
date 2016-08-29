@@ -18,21 +18,14 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({
-	"secret": "secretNinja",
-	"store": new SequelizeStore({
-		db: connection
-	}),
-	"cookie": {
-		"path": "/",
-		"httpOnly": true,
-		"secure": false,
-		"maxAge": null
-	},
-	"name": "sid",
-	"resave": false,
-	"saveUninitialized": false
-}));
+app.use(session(Object.assign({},
+	config.session,
+	{
+		"store": new SequelizeStore({
+			db: connection
+		})
+	}
+)));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // setup database
@@ -58,15 +51,6 @@ connection.sync({force: true})
 	.catch((err)=>{
 	console.error(err);
 });
-/*
-app.use('/', function (req, res, next) {
-	console.log('____________------------------____________________------------');
-	console.log('user ',req.user);
-	console.log('isAuthenticated ',req.isAuthenticated());
-	console.log('session ', req.session);
-	console.log('cookies ', req.cookies);
-	next();
-});*/
 
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy;
@@ -88,7 +72,7 @@ passport.use(new LocalStrategy({
 				}});
 			}
 
-			return done(null, user);
+			return done(null, user.getPublic());
 		}).catch(function (err) {
 		    console.log(err);
 		});
@@ -101,8 +85,7 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
 	userModel.findById(id).then(function(user) {
-		console.log('deserializing user:',user);
-		done(null, user);
+		done(null, user.getPublic());
 	}).catch(function(err) {
 		if (err) {
 			console.error(err);

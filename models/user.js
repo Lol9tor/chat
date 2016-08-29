@@ -37,10 +37,9 @@ module.exports = function (connection, DataTypes) {
 				return crypto.createHmac('sha1', this.salt).update(val).digest('hex');
 			},
 			checkPassword: function (val) {
-				console.log(val, this.hashedPassword);
 				return this.encryptPassword(val) === this.hashedPassword;
 			},
-			toJSON: function () {
+			getPublic: function () {
 				hiddenFields.forEach( (key) => {
 				   delete this.dataValues[key];
 				});
